@@ -1,0 +1,36 @@
+FROM envoyproxy/envoy-debug-dev:latest
+# FROM envoyproxy/envoy-dev:latest
+
+# Install the (Ubuntu Bionic) Linux-Perf (the base image of this container is
+# from Ubuntu Bionic). It is recommended by Ubuntu to install
+# linux-tools-$(uname -r) to get the Linux-Perf client for the specific
+# (Ubuntu) kernel, but, since this is inside a container which can be built
+# on a non-Ubuntu docker host, then $(uname -r) for the non-Ubuntu docker
+# host can return, during the docker building phase, an unknown package name
+# "linux-tools-$(uname -r)" not found in the Ubuntu package repositories.
+# Below it is installed a Perf client for 4.15.0.
+# https://stackoverflow.com/questions/46674444/is-it-possible-to-run-linux-perf-tool-inside-docker-container
+
+ARG ubuntu_specific_linux_tools=linux-tools-4.15.0-142
+# ARG ubuntu_specific_linux_tools=linux-tools-gke-5.4
+RUN apt-get update && \
+    apt-get -y install curl xz-utils \
+                       linux-tools-generic $ubuntu_specific_linux_tools
+
+RUN ln -sf  \
+       $( dpkg -L $ubuntu_specific_linux_tools | grep '/usr/lib/.*/perf$' ) \
+       /usr/bin/perf
+
+# Install sysbench
+RUN curl -s https://packagecloud.io/install/repositories/akopytov/sysbench/script.deb.sh | bash
+
+RUN apt-get -y install sysbench && \
+    apt-get clean && \
+    apt autoremove --purge
+
+COPY ./envoy.yaml /etc/envoy.yaml
+COPY ./dockerized_sysbench_envoy_mysql_load_test.sh ./perf_on_envoy.sh \
+      /root/
+RUN chmod go+r /etc/envoy.yaml
+
+ENTRYPOINT ["/bin/bash", "/root/dockerized_sysbench_envoy_mysql_load_test.sh"]

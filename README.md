@@ -9,6 +9,9 @@ subject to change. The documentation can be inaccurate.
 
 # How:
 
+(The `docker-compose` version, in the `docker-compose` subdirectory, uses a
+MySQL database in a container, and has some slightly different details.)
+
 1. Run the [test] MySQL server on localhost (according to this `envoy.yaml`)
 
 2. Run the Envoy proxy to that MySQL server, like:

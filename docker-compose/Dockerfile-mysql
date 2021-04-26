@@ -1,0 +1,13 @@
+FROM mysql:5.7
+
+ARG MYSQL_DATABASE
+
+# Sysbench needs this database (its name is in ".env" file) to run its
+# tests against it. (Sysbench just needs the database created, it will
+# create the tables and populate them by itself.)
+
+ENV MYSQL_DATABASE=${MYSQL_DATABASE}
+
+EXPOSE 3306
+
+CMD ["mysqld"]

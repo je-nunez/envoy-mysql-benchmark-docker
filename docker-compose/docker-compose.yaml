@@ -1,0 +1,34 @@
+# https://stackoverflow.com/questions/48808069/how-to-create-database-in-database-docker-container
+
+version: "3.7"
+
+services:
+
+  proxy:
+    privileged: true
+    build:
+      context: .
+      dockerfile: Dockerfile-proxy
+    networks:
+      - envoymesh
+    ports:
+      - "1999:1999"
+      - "8001:8001"
+    volumes:
+      - type: bind
+        source: ./proxy_results
+        target: /results
+
+  mysql:
+    build:
+      context: .
+      dockerfile: Dockerfile-mysql
+    networks:
+      - envoymesh
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+      - MYSQL_DATABASE=${SYSBENCH_DB_NAME}
+
+networks:
+  envoymesh:
+    name: envoymesh
