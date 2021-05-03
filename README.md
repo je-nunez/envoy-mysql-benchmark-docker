@@ -12,7 +12,7 @@ subject to change. The documentation can be inaccurate.
 
 In this directory, run:
 
-      [[ ! -d ./proxy_results ] && mkdir ./proxy_results 2>/dev/null
+      [[ ! -d ./proxy_results ]] && mkdir ./proxy_results
        
       docker-compose pull
        
