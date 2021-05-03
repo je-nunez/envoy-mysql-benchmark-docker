@@ -12,6 +12,8 @@ subject to change. The documentation can be inaccurate.
 
 In this directory, run:
 
+      [[ ! -d ./proxy_results ] && mkdir ./proxy_results 2>/dev/null
+       
       docker-compose pull
        
       docker-compose up --build -d
