@@ -6,6 +6,10 @@ services:
 
   proxy:
     privileged: true
+    ulimits:
+      core:
+        soft: -1
+        hard: -1
     build:
       context: .
       dockerfile: Dockerfile-proxy
@@ -18,6 +22,10 @@ services:
       - type: bind
         source: ./proxy_results
         target: /results
+    labels:
+      org.my-test.role: "proxy"
+      org.my-test.filter: "mysql"
+
 
   mysql:
     build:
@@ -28,6 +36,9 @@ services:
     environment:
       - MYSQL_ALLOW_EMPTY_PASSWORD=yes
       - MYSQL_DATABASE=${SYSBENCH_DB_NAME}
+    labels:
+      org.my-test.role: "database"
+      org.my-test.filter: "mysql"
 
 networks:
   envoymesh:

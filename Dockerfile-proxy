@@ -29,8 +29,7 @@ RUN apt-get -y install sysbench && \
     apt autoremove --purge
 
 COPY ./envoy.yaml /etc/envoy.yaml
-COPY ./dockerized_sysbench_envoy_mysql_load_test.sh ./perf_on_envoy.sh \
-      /root/
+COPY ./dockerized_sysbench_envoy_mysql_load_test.sh /root/
 RUN chmod go+r /etc/envoy.yaml
 
 ENTRYPOINT ["/bin/bash", "/root/dockerized_sysbench_envoy_mysql_load_test.sh"]
