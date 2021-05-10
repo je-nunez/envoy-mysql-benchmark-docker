@@ -1,4 +1,5 @@
-FROM envoyproxy/envoy-debug-dev:latest
+ARG ENVOY_TAG_VERSION=latest
+FROM envoyproxy/envoy-debug-dev:$ENVOY_TAG_VERSION
 # FROM envoyproxy/envoy-dev:latest
 
 # Install the (Ubuntu Bionic) Linux-Perf (the base image of this container is
@@ -29,7 +30,8 @@ RUN apt-get -y install sysbench && \
     apt autoremove --purge
 
 COPY ./envoy.yaml /etc/envoy.yaml
-COPY ./dockerized_sysbench_envoy_mysql_load_test.sh /root/
+COPY ./envoy_load_test.sh ./test_global_vars.sh ./test_actual_functions.sh \
+     /root/
 RUN chmod go+r /etc/envoy.yaml
 
-ENTRYPOINT ["/bin/bash", "/root/dockerized_sysbench_envoy_mysql_load_test.sh"]
+ENTRYPOINT ["/bin/bash", "/root/envoy_load_test.sh"]
